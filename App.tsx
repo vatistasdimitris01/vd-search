@@ -46,6 +46,29 @@ const SettingsButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
     </button>
 );
 
+const Footer: React.FC = () => (
+    <footer className="w-full max-w-2xl text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
+      <div className="flex justify-center items-center gap-6 mb-2">
+        <a href="https://x.com/vatistasdim" target="_blank" rel="noopener noreferrer" aria-label="X Profile" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+          </svg>
+        </a>
+        <a href="https://www.instagram.com/vatistasdimitris/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Profile" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.829 0 8s.01 2.444.048 3.297c.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.829 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.718-.89.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.444 16 10.171 16 8s-.01-2.444-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.444.01 10.171 0 8 0zm0 1.442a6.556 6.556 0 1 1 0 13.112A6.556 6.556 0 0 1 8 1.442zM8 4.869A3.131 3.131 0 1 0 8 11.131 3.131 3.131 0 0 0 8 4.869zm0 1.143a1.988 1.988 0 1 1 0 3.976 1.988 1.988 0 0 1 0-3.976zM12.316 3.4a.962.962 0 1 0 0 1.924.962.962 0 0 0 0-1.924z"/>
+          </svg>
+        </a>
+        <a href="https://dvatistas.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        </a>
+      </div>
+      <p>© vatistasdimitris 2025</p>
+    </footer>
+);
+
 
 const App: React.FC = () => {
   const [query, setQuery] = useState<string>('');
@@ -316,7 +339,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={`relative bg-white dark:bg-[#0d1117] text-gray-900 dark:text-white flex flex-col items-center min-h-screen p-4 sm:p-8 font-sans transition-colors duration-300 ${hasSearched ? 'justify-start pt-20 sm:pt-12' : 'justify-center'}`}>
+    <div className="relative bg-white dark:bg-[#0d1117] text-gray-900 dark:text-white flex flex-col items-center min-h-screen p-4 sm:p-8 font-sans transition-colors duration-300">
 
       <div className="absolute top-4 left-4">
         {hasSearched && <HomeButton onClick={handleGoHome} />}
@@ -325,45 +348,50 @@ const App: React.FC = () => {
           <SettingsButton onClick={() => setView('settings')} />
       </div>
       
-      <div className="w-full max-w-2xl flex-shrink-0">
-        <AnimatedTitle 
-            text="vd search"
-            className={`text-center font-bold text-gray-800 dark:text-gray-200 transition-all duration-300 ${hasSearched ? 'text-3xl mb-4' : 'text-5xl sm:text-6xl mb-8'}`}
-        />
-        
-        <SearchInput 
-          value={query}
-          onChange={setQuery}
-          onSearch={handleSearch} 
-          disabled={loading} 
-        />
-        <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
-            Search results may be enhanced based on your location.
-        </p>
+      <main className={`w-full max-w-2xl flex-grow flex flex-col ${hasSearched ? 'justify-start pt-20 sm:pt-12' : 'justify-center'}`}>
+        <div className="w-full">
+            <AnimatedTitle 
+                text="vd search"
+                className={`text-center font-bold text-gray-800 dark:text-gray-200 transition-all duration-300 ${hasSearched ? 'text-3xl mb-4' : 'text-5xl sm:text-6xl mb-8'}`}
+            />
+            
+            <SearchInput 
+              value={query}
+              onChange={setQuery}
+              onSearch={handleSearch} 
+              disabled={loading} 
+            />
+            <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Search results may be enhanced based on your location.
+            </p>
+
+            {hasSearched && (
+              <Tabs currentTab={currentTab} onTabChange={handleTabChange} />
+            )}
+        </div>
 
         {hasSearched && (
-          <Tabs currentTab={currentTab} onTabChange={handleTabChange} />
+            <ResultsDisplay
+              loading={loading}
+              error={error}
+              results={results}
+              promotion={promotion}
+              searchType={currentTab}
+            />
         )}
-      </div>
+        
+        {hasSearched && !loading && results && results.length > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+        )}
+      </main>
 
-      {hasSearched && (
-        <ResultsDisplay
-          loading={loading}
-          error={error}
-          results={results}
-          promotion={promotion}
-          searchType={currentTab}
-        />
-      )}
-      
-      {hasSearched && !loading && results && results.length > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
       <ScrollToTopButton isVisible={showScrollToTop && hasSearched} onClick={scrollToTop} />
+
+      <Footer />
     </div>
   );
 };

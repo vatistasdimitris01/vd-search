@@ -20,15 +20,20 @@ const LoadingAnimation: React.FC = () => (
   );
 
 const PromotionResult: React.FC<{ item: Promotion }> = ({ item }) => (
-    <div className="bg-green-50 dark:bg-green-900/40 rounded-lg p-4 sm:p-6 mb-6 border border-green-300 dark:border-green-700">
+    <a 
+        href={item.url} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="block group bg-green-50 dark:bg-green-900/40 rounded-lg p-4 sm:p-6 mb-6 border border-green-300 dark:border-green-700 transition-shadow hover:shadow-md"
+    >
         <div className="flex flex-col items-start gap-2 mb-2 sm:flex-row sm:items-center sm:justify-between">
-            <h3 className="text-blue-600 dark:text-[#58a6ff] text-lg sm:text-xl break-words">
-                <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline">{item.title}</a>
+            <h3 className="text-blue-600 dark:text-[#58a6ff] text-lg sm:text-xl break-words group-hover:underline">
+                {item.title}
             </h3>
             <span className="text-xs font-semibold text-green-700 dark:text-green-300 bg-green-200 dark:bg-green-800/50 px-2 py-1 rounded-full">Promotion</span>
         </div>
         <p className="text-gray-600 dark:text-[#c9d1d9] mt-1 text-sm">{item.description}</p>
-    </div>
+    </a>
 );
 
 const WebResult: React.FC<{ item: SearchResultItem }> = ({ item }) => (

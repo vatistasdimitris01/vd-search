@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Promotion } from '../types';
 import { fetchSearchHistory, SearchHistoryItem } from '../services/historyService';
 import { fetchAllPromotions } from '../services/promotionService';
@@ -46,6 +46,7 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
     const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         setPromotions(initialPromotions);
@@ -158,9 +159,100 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
             setIsSaving(false);
         }
     };
+
+    const handleExport = () => {
+        const exportedPromotions = promotions.map(({ id, ...rest }) => {
+            // Keep existing IDs unless they are temporary client-side ones
+            return id.startsWith('new-') ? rest : { id, ...rest };
+        });
+        const jsonString = JSON.stringify(exportedPromotions, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'promotions.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const text = e.target?.result;
+                if (typeof text !== 'string') {
+                    throw new Error("File content is not readable text.");
+                }
+                const importedData = JSON.parse(text);
+
+                // Basic validation
+                if (!Array.isArray(importedData)) {
+                    throw new Error("Imported file is not a valid JSON array.");
+                }
+
+                const validatedPromotions: Promotion[] = importedData.map((item: any) => {
+                    if (!item.title || !item.url || !Array.isArray(item.queries)) {
+                        throw new Error(`Invalid promotion object found: ${JSON.stringify(item)}`);
+                    }
+                    return {
+                        id: `new-${crypto.randomUUID()}`, // Assign new temporary ID
+                        title: item.title,
+                        description: item.description || '',
+                        url: item.url,
+                        queries: item.queries,
+                    };
+                });
+                
+                if (window.confirm("This will replace all current promotions in the editor with the content from the file. Are you sure?")) {
+                    setPromotions(validatedPromotions);
+                    alert(`${validatedPromotions.length} promotions were loaded. Click "Save All Changes to Database" to finalize the import.`);
+                }
+            } catch (error) {
+                console.error("Import error:", error);
+                alert(`Failed to import promotions: ${(error as Error).message}`);
+            } finally {
+                // Reset file input to allow importing the same file again
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    const downloadExample = () => {
+        const example = [
+            {
+              "title": "Example Promotion",
+              "description": "This is an example of a promotion.",
+              "url": "https://example.com",
+              "queries": ["example", "test"]
+            }
+        ];
+        const jsonString = JSON.stringify(example, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'promotions_example.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
     
     const btnPrimary = "inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
     const btnSecondary = "inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600";
+    
+    const btnIconBase = "inline-flex justify-center items-center w-10 h-10 p-2 rounded-md border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-wait";
+    const btnIconSecondary = `${btnIconBase} bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600`;
+    const btnIconPrimary = `${btnIconBase} bg-blue-600 text-white border-transparent hover:bg-blue-700`;
+
 
     const TabButton = ({ tab, label }: { tab: 'promotions' | 'history', label: string }) => (
         <button
@@ -183,8 +275,12 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
                 <p className="text-xs text-gray-500 mt-2"><b>Queries:</b> {promo.queries.join(', ')}</p>
             </div>
             <div className="flex gap-2 justify-self-start md:justify-self-end">
-                <button onClick={() => handleEdit(promo)} className={btnSecondary}>Edit</button>
-                <button onClick={() => handleDelete(promo.id)} aria-label="Delete" className="p-2 text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <button onClick={() => handleEdit(promo)} className={btnIconSecondary} aria-label="Edit promotion" title="Edit promotion">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002 2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </button>
+                <button onClick={() => handleDelete(promo.id)} className={`${btnIconSecondary} hover:text-red-500 dark:hover:text-red-400`} aria-label="Delete promotion" title="Delete promotion">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
             </div>
@@ -274,10 +370,22 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
 
     const renderPromotionsTab = () => (
         <>
-            <div className="text-right">
-                <button onClick={handleAddNew} className={btnPrimary}>Add New Promotion</button>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-wrap gap-2">
+                    <button onClick={handleExport} className={btnSecondary}>Export to JSON</button>
+                    <label className={`${btnSecondary} cursor-pointer`}>
+                        Import from JSON
+                        <input type="file" accept=".json" className="hidden" onChange={handleImport} ref={fileInputRef} />
+                    </label>
+                    <button onClick={downloadExample} className="text-sm text-blue-600 dark:text-blue-400 hover:underline self-center">Download Example</button>
+                </div>
+                <button onClick={handleAddNew} className={`${btnIconPrimary} rounded-full self-end sm:self-center`} aria-label="Add New Promotion" title="Add New Promotion">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </button>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 mt-4">
                 {promotions.map(promo => (
                     <div key={promo.id} className="bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
                         {editingId === promo.id ? renderEditForm(promo) : renderPromotionView(promo)}
@@ -341,15 +449,19 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
                     <button 
                         onClick={handleRefresh} 
                         disabled={isDataLoading} 
-                        className={`${btnSecondary} flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait`}
+                        className={btnIconSecondary}
                         aria-label="Refresh data"
+                        title="Refresh data"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${isDataLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M20 20v-5h-5M4 4a14.95 14.95 0 0114.394 9.193M20 20a14.95 14.95 0 01-14.394-9.193" />
                         </svg>
-                        <span>Refresh</span>
                     </button>
-                    <button onClick={onBack} className={btnSecondary}>Back to Search</button>
+                    <button onClick={onBack} className={btnIconSecondary} aria-label="Back to Search" title="Back to Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h12" />
+                        </svg>
+                    </button>
                 </div>
             </header>
             <main className="max-w-5xl mx-auto space-y-6">
