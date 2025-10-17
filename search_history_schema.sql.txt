@@ -1,0 +1,62 @@
+-- Supabase SQL Schema for the 'search_history' table.
+--
+-- To use this file:
+-- 1. Navigate to the "SQL Editor" in your Supabase project dashboard.
+-- 2. Click on "+ New query".
+-- 3. Copy the entire content of this file and paste it into the editor.
+-- 4. Click the "RUN" button to create the table and its associated policies.
+--
+-- This script will create a table to log user search queries along with their location data.
+
+-- Step 1: Create the 'search_history' table
+-- This table stores each search query with a timestamp and location details.
+-- Using "IF NOT EXISTS" prevents errors if the script is run multiple times.
+CREATE TABLE IF NOT EXISTS public.search_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  query TEXT NOT NULL,
+  ip_address TEXT,
+  city TEXT,
+  country TEXT,
+  country_code TEXT,
+  latitude NUMERIC,
+  longitude NUMERIC
+);
+
+-- Add comments on columns for clarity in the Supabase UI
+COMMENT ON TABLE public.search_history IS 'Logs user search queries and location information.';
+COMMENT ON COLUMN public.search_history.id IS 'Unique identifier for each search entry.';
+COMMENT ON COLUMN public.search_history.created_at IS 'Timestamp when the search was performed.';
+COMMENT ON COLUMN public.search_history.query IS 'The search term entered by the user.';
+COMMENT ON COLUMN public.search_history.ip_address IS 'User''s IP address at the time of search.';
+COMMENT ON COLUMN public.search_history.city IS 'City derived from the user''s IP address.';
+COMMENT ON COLUMN public.search_history.country IS 'Country derived from the user''s IP address.';
+COMMENT ON COLUMN public.search_history.country_code IS 'Two-letter country code (ISO 3166-1 alpha-2).';
+COMMENT ON COLUMN public.search_history.latitude IS 'Geographical latitude of the user.';
+COMMENT ON COLUMN public.search_history.longitude IS 'Geographical longitude of the user.';
+
+
+-- Step 2: Enable Row Level Security (RLS)
+-- RLS is a crucial security feature in Supabase. By default, it blocks all access.
+-- We must explicitly create policies to grant access.
+ALTER TABLE public.search_history ENABLE ROW LEVEL SECURITY;
+
+-- Step 3: Create a policy to allow inserting new search queries
+-- This policy allows anyone (i.e., the public 'anon' role) to add new rows to the table.
+-- This is necessary for the application to save search history from any user.
+CREATE POLICY "Allow public insert access"
+ON public.search_history
+FOR INSERT
+WITH CHECK (true);
+
+-- Step 4: Create a policy to allow reading search history data
+-- This policy allows anyone to view all records in the search history.
+-- This is used by the Admin Panel to display the history log.
+--
+-- SECURITY WARNING: For a production application, you should restrict this policy to
+-- authenticated users with an 'admin' role to prevent public exposure of user data.
+-- Example for a restricted policy: `USING (auth.role() = 'admin')`
+CREATE POLICY "Allow public read access"
+ON public.search_history
+FOR SELECT
+USING (true);

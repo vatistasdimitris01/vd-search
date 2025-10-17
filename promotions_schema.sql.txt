@@ -1,0 +1,35 @@
+-- 1. Create the promotions table
+-- This table will store your promotional data.
+-- The 'id' is a unique identifier, and 'queries' is an array of text for matching.
+CREATE TABLE promotions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  url TEXT NOT NULL,
+  queries TEXT[] NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 2. Enable Row Level Security (RLS) for the table
+-- This is a crucial security step in Supabase. It ensures that no data can be accessed
+-- unless a specific policy allows it.
+ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;
+
+-- 3. Create a policy that allows public read access
+-- This policy allows anyone (even unauthenticated users) to read data from the table.
+-- This is necessary for the search function to find promotions.
+CREATE POLICY "Allow public read access"
+ON promotions
+FOR SELECT
+USING (true);
+
+-- 4. Create a policy that allows write access using the anon key
+-- This policy allows users with the 'anon' key (the public key) to insert, update, and delete.
+-- WARNING: This is for demonstration purposes to allow the admin panel to work without user logins.
+-- In a real production application, you would restrict this to authenticated users
+-- by changing `USING (true)` to `USING (auth.role() = 'authenticated')`.
+CREATE POLICY "Allow anon write access"
+ON promotions
+FOR ALL
+USING (true)
+WITH CHECK (true);

@@ -1,0 +1,5 @@
+{
+  "name": "vd search",
+  "description": "A web browser application named vd search that uses the Google Custom Search API to allow users to search for web pages and images, built with React and Tailwind CSS.",
+  "requestFramePermissions": []
+}

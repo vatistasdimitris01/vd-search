@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><Promotions>
+  <Promotion id="85aa4cb8" title="qbi - ai" description="QBITAI – An AI-powered assistant designed to help users manage tasks and queries efficiently." url="https://aiqbit.vercel.app/" is_regex="false" enabled="true" queries="AI">
+    <Query>AI</Query>
+  </Promotion>
+  <Promotion id="f67b4948" title="DimitrisVatistas" description="WebDeveloper&amp;WebDesigner" url="https://dvatistas.vercel.app/" is_regex="false" enabled="true" queries="vatistas,dimitris,web developer,developer">
+    <Query>vatistas</Query>
+    <Query>dimitris</Query>
+    <Query>web developer</Query>
+    <Query>developer</Query>
+  </Promotion>
+</Promotions>
