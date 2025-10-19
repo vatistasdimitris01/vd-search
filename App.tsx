@@ -25,7 +25,7 @@ interface UserLocation {
 const HomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
     <button
         onClick={onClick}
-        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+        className="p-2 rounded-full bg-gray-900/5 dark:bg-white/10 text-gray-800 dark:text-gray-200 hover:bg-gray-900/10 dark:hover:bg-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
         aria-label="Go to homepage"
     >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -37,7 +37,7 @@ const HomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 const SettingsButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
     <button
         onClick={onClick}
-        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+        className="p-2 rounded-full bg-gray-900/5 dark:bg-white/10 text-gray-800 dark:text-gray-200 hover:bg-gray-900/10 dark:hover:bg-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
         aria-label="Open settings"
     >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -339,7 +339,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="relative bg-white dark:bg-[#0d1117] text-gray-900 dark:text-white flex flex-col items-center min-h-screen p-4 sm:p-8 font-sans transition-colors duration-300">
+    <div className="relative text-gray-900 dark:text-white flex flex-col items-center min-h-screen p-4 sm:p-8 font-sans">
 
       <div className="absolute top-4 left-4">
         {hasSearched && <HomeButton onClick={handleGoHome} />}
@@ -348,11 +348,11 @@ const App: React.FC = () => {
           <SettingsButton onClick={() => setView('settings')} />
       </div>
       
-      <main className={`w-full max-w-2xl flex-grow flex flex-col ${hasSearched ? 'justify-start pt-20 sm:pt-12' : 'justify-center'}`}>
-        <div className="w-full">
+      <main className={`w-full max-w-2xl flex-grow flex flex-col ${hasSearched ? 'justify-start' : 'justify-center'}`}>
+        <div className={`w-full transition-all duration-500 ease-[var(--ease-out-quart)] ${hasSearched ? 'pt-20 sm:pt-12' : ''}`}>
             <AnimatedTitle 
                 text="vd search"
-                className={`text-center font-bold text-gray-800 dark:text-gray-200 transition-all duration-300 ${hasSearched ? 'text-3xl mb-4' : 'text-5xl sm:text-6xl mb-8'}`}
+                className={`text-center font-bold text-gray-800 dark:text-gray-200 transition-all duration-500 ease-[var(--ease-out-quart)] ${hasSearched ? 'text-3xl mb-4' : 'text-5xl sm:text-6xl mb-8'}`}
             />
             
             <SearchInput 
@@ -360,6 +360,7 @@ const App: React.FC = () => {
               onChange={setQuery}
               onSearch={handleSearch} 
               disabled={loading} 
+              suggestionsEnabled={!hasSearched}
             />
             <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
                 Search results may be enhanced based on your location.

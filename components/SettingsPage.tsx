@@ -16,7 +16,7 @@ const BackIcon: React.FC = () => (
 
 const AdminIcon: React.FC = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-1.007 1.11-1.226l.28-.1c.34-.124.718-.124 1.058 0l.28.1c.55.219 1.02.684 1.11 1.226l.068.418c.46.283.92.618 1.343 1.003l.342.342c.435.435.748.958.9 1.518l.058.28c.124.34.124.718 0 1.058l-.058.28c-.152.56-.465 1.083-.9 1.518l-.342.342c-.423.385-.883.72-1.343 1.003l-.068.418c-.09.542-.56 1.007-1.11 1.226l-.28.1c-.34.124-.718-.124-1.058 0l-.28-.1c-.55-.219-1.02-.684-1.11-1.226l-.068-.418c-.46-.283-.92-.618-1.343-1.003l-.342-.342c-.435-.435-.748-.958-.9-1.518l-.058-.28c-.124-.34-.124-.718 0-1.058l.058.28c.152.56.465 1.083.9-1.518l.342.342c.423-.385.883.72 1.343-1.003l.068-.418M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-1.007 1.11-1.226l.28-.1c.34-.124.718-.124 1.058 0l.28.1c.55.219 1.02.684 1.11 1.226l.068.418c.46.283.92.618 1.343 1.003l.342.342c.435.435.748.958.9 1.518l.058.28c.124.34.124.718 0 1.058l-.058.28c-.152.56-.465 1.083-.9 1.518l-.342.342c-.423.385-.883.72-1.343 1.003l-.068.418c-.09.542-.56 1.007-1.11 1.226l-.28.1c-.34.124-.718-.124-1.058 0l-.28-.1c-.55-.219-1.02-.684-1.11-1.226l-.068-.418c-.46-.283-.92-.618-1.343-1.003l-.342-.342c-.435-.435-.748-.958-.9-1.518l-.058-.28c-.124.34-.124-.718 0-1.058l.058.28c.152.56.465 1.083.9-1.518l.342.342c.423-.385.883.72 1.343-1.003l.068-.418M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
     </svg>
 );
 
@@ -40,8 +40,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose, onAdminClick, them
                 </button>
                 <h1 className="text-3xl font-bold">Settings</h1>
             </header>
-            <main className="max-w-2xl mx-auto bg-white dark:bg-[#161b22] rounded-2xl shadow-lg p-6 space-y-2">
-                <button onClick={onAdminClick} className="w-full flex items-center gap-4 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors text-left">
+            <main className="max-w-2xl mx-auto bg-white dark:bg-[#161b22] rounded-2xl shadow-lg p-4 sm:p-6 space-y-1">
+                <button onClick={onAdminClick} className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors text-left">
                     <AdminIcon />
                     <div>
                         <p className="font-semibold text-gray-800 dark:text-gray-200">Manage Promotions</p>
@@ -49,7 +49,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose, onAdminClick, them
                     </div>
                 </button>
                 
-                <div className="w-full flex items-center justify-between gap-4 p-4 rounded-lg">
+                <div className="w-full flex items-center justify-between gap-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800/50">
                     <div className="flex items-center gap-4">
                         <ThemeIcon />
                         <div>

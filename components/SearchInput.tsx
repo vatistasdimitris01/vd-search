@@ -6,16 +6,17 @@ interface SearchInputProps {
   onChange: (value: string) => void;
   onSearch: (query: string) => void;
   disabled: boolean;
+  suggestionsEnabled?: boolean;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSearch, disabled }) => {
+const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSearch, disabled, suggestionsEnabled = true }) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (value.trim() === '') {
+    if (value.trim() === '' || !suggestionsEnabled) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -29,7 +30,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSearch, di
     }, 250); // Debounce delay
 
     return () => clearTimeout(handler);
-  }, [value]);
+  }, [value, suggestionsEnabled]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -73,14 +74,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSearch, di
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
-        onFocus={() => value.length > 0 && suggestions.length > 0 && setShowSuggestions(true)}
+        onFocus={() => suggestionsEnabled && value.length > 0 && suggestions.length > 0 && setShowSuggestions(true)}
         placeholder="Type and press Enter..."
         disabled={disabled}
-        className="w-full p-3 text-base bg-white dark:bg-[#161b22] text-gray-900 dark:text-white border-2 border-gray-300 dark:border-[#444] rounded-full outline-none focus:border-blue-500 dark:focus:border-[#58a6ff] transition-colors disabled:opacity-50"
+        className="w-full py-3 px-5 text-base bg-white dark:bg-[#161b22] text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 rounded-full outline-none focus:border-blue-500 dark:focus:border-[#58a6ff] focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/10 focus:shadow-md transition-all duration-200 disabled:opacity-50"
         autoComplete="off"
       />
       {showSuggestions && suggestions.length > 0 && (
-        <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-[#161b22] border border-gray-300 dark:border-[#444] rounded-xl shadow-lg overflow-hidden">
+        <ul className="absolute z-10 w-full mt-2 bg-white dark:bg-[#1f2937] border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden animate-fade-in">
           {suggestions.map((suggestion, index) => (
             <li
               key={suggestion}

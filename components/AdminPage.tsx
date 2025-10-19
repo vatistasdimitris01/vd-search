@@ -246,10 +246,10 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
         URL.revokeObjectURL(url);
     };
     
-    const btnPrimary = "inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
-    const btnSecondary = "inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600";
+    const btnPrimary = "inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors";
+    const btnSecondary = "inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors";
     
-    const btnIconBase = "inline-flex justify-center items-center w-10 h-10 p-2 rounded-md border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-wait";
+    const btnIconBase = "inline-flex justify-center items-center w-10 h-10 p-2 rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-wait";
     const btnIconSecondary = `${btnIconBase} bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600`;
     const btnIconPrimary = `${btnIconBase} bg-blue-600 text-white border-transparent hover:bg-blue-700`;
 
@@ -288,7 +288,7 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
     );
 
     const renderEditForm = (promo: Promotion) => (
-        <div className="bg-gray-50 dark:bg-gray-800/50 p-4 sm:p-6 rounded-b-lg space-y-6">
+        <div className="bg-gray-50 dark:bg-gray-800/50 p-4 sm:p-6 rounded-b-xl space-y-6">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Edit promotion</h2>
             
             {/* Live Preview */}
@@ -387,7 +387,7 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
             </div>
             <div className="space-y-4 mt-4">
                 {promotions.map(promo => (
-                    <div key={promo.id} className="bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+                    <div key={promo.id} className="bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
                         {editingId === promo.id ? renderEditForm(promo) : renderPromotionView(promo)}
                     </div>
                 ))}
@@ -396,7 +396,7 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
                 <button 
                     onClick={handleFinalSave} 
                     disabled={isSaving}
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg disabled:opacity-50 disabled:cursor-wait w-full sm:w-auto"
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full disabled:opacity-50 disabled:cursor-wait w-full sm:w-auto transition-colors"
                 >
                     {isSaving ? 'Saving...' : 'Save All Changes to Database'}
                 </button>
@@ -405,7 +405,7 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
     );
 
     const renderHistoryTab = () => (
-        <div className="bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
             {historyLoading ? (
                 <p className="p-6 text-center">Loading history...</p>
             ) : (
@@ -422,8 +422,8 @@ const AdminPage: React.FC<AdminPageProps> = ({ initialPromotions, onSave, onBack
                             </tr>
                         </thead>
                         <tbody>
-                            {searchHistory.map(item => (
-                                <tr key={item.id} className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600/20">
+                            {searchHistory.map((item, index) => (
+                                <tr key={item.id} className={`border-b dark:border-gray-700 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600/20 ${index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800/50'}`}>
                                     <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">{item.query}</td>
                                     <td className="px-6 py-4">{new Date(item.created_at).toLocaleString()}</td>
                                     <td className="px-6 py-4">{item.city || 'N/A'}, {item.country || 'N/A'}</td>
